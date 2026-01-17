@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AppLayout from "./layouts/AppLayout";
 
 import Dashboard from "./pages/Dashboard";
 import AddProduct from "./pages/AddProduct";
@@ -13,35 +12,33 @@ import Login from "./pages/Login";
 export default function App() {
   return (
     <Routes>
+      {/* PUBLIC */}
       <Route path="/login" element={<Login />} />
 
+      {/* PROTECTED APP */}
       <Route
-        path="/*"
+        path="/"
         element={
           <ProtectedRoute>
-            <div className="flex bg-gray-100 min-h-screen">
-              <Sidebar />
-              <div className="flex-1">
-                <Header />
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route
-                    path="/add-product"
-                    element={
-                      <ProtectedRoute roles={["OWNER"]}>
-                        <AddProduct />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route path="/imei" element={<ImeiEntry />} />
-                  <Route path="/products" element={<ProductList />} />
-                  <Route path="/sales" element={<Sales />} />
-                </Routes>
-              </div>
-            </div>
+            <AppLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<Dashboard />} />
+
+        <Route
+          path="add-product"
+          element={
+            <ProtectedRoute roles={["OWNER"]}>
+              <AddProduct />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="imei" element={<ImeiEntry />} />
+        <Route path="products" element={<ProductList />} />
+        <Route path="sales" element={<Sales />} />
+      </Route>
     </Routes>
   );
 }
